@@ -19,4 +19,54 @@ model Pool {
   title    String
   code     String   @unique
   createAt DateTime @default(now())
+
+  participants Participant[]
+
+  owner   User?   @relation(fields: [ownerId], references: [id])
+  ownerId String?
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  avatarUrl String?
+  createAt  DateTime @default(now())
+
+  participatingAt Participant[]
+  ownPools        Pool[]
+}
+
+model Game {
+  id                    String   @id @default(cuid())
+  date                  DateTime
+  firstTeamCountryCode  String
+  secondTeamCountryCode String
+
+  guesses Guess[]
+}
+
+model Guess {
+  id              String   @id @default(cuid())
+  firstTeamPoint  Int
+  secondTeamPoint Int
+  createAt        DateTime @default(now())
+
+  participant   Participant @relation(fields: [participantId], references: [id])
+  participantId String
+
+  game   Game   @relation(fields: [gameId], references: [id])
+  gameId String
+}
+
+model Participant {
+  id     String @id @default(cuid())
+  userId String
+  poolId String
+
+  guesses Guess[]
+  user    User    @relation(fields: [userId], references: [id])
+  pool    Pool    @relation(fields: [poolId], references: [id])
+
+  @@unique([userId, poolId])
 }
