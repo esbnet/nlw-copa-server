@@ -1,17 +1,17 @@
 /*
   Warnings:
 
-  - You are about to drop the `Pool` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the column `poolId` on the `Participant` table. All the data in the column will be lost.
+  - You are about to drop the `Poll` table. If the table is not empty, all the data it contains will be lost.
+  - You are about to drop the column `pollId` on the `Participant` table. All the data in the column will be lost.
   - Added the required column `pollId` to the `Participant` table without a default value. This is not possible if the table is not empty.
 
 */
 -- DropIndex
-DROP INDEX "Pool_code_key";
+DROP INDEX "Poll_code_key";
 
 -- DropTable
 PRAGMA foreign_keys=off;
-DROP TABLE "Pool";
+DROP TABLE "Poll";
 PRAGMA foreign_keys=on;
 
 -- CreateTable
