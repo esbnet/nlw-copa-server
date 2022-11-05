@@ -6,11 +6,13 @@ import { prisma } from "../lib/prisma"
 import { authenticate } from "../plugin/authenticate"
 
 export async function poolRoutes(fastify: FastifyInstance) {
+  // List todos os bolões do banco de dados
   fastify.get("/polls/count", async () => {
     const count = await prisma.poll.count()
     return { count }
   })
 
+  // Adiciona um bolão
   fastify.post("/polls", async (request, replay) => {
     const createPollBody = z.object({
       title: z.string(),
@@ -49,8 +51,9 @@ export async function poolRoutes(fastify: FastifyInstance) {
     return replay.status(201).send({ code })
   })
 
+  // Adiciona um usuário como participante de um determinado bolão
   fastify.post(
-    "/polls/:id/join",
+    "/polls/join",
     { onRequest: [authenticate] },
     async (request, replay) => {
       const joinPollBody = z.object({
@@ -147,5 +150,47 @@ export async function poolRoutes(fastify: FastifyInstance) {
     })
 
     return { polls }
+  })
+
+  // Retorna bolão pelo ID
+  fastify.get("/polls/:id", { onRequest: [authenticate] }, async (request) => {
+    // Locatiza todos os bolões que o usuário participa
+    const getPollParams = z.object({
+      id: z.string(),
+    })
+
+    const { id } = getPollParams.parse(request.params)
+
+    const poll = await prisma.poll.findMany({
+      where: {
+        id,
+      },
+      include: {
+        _count: {
+          select: {
+            participants: true,
+          },
+        },
+        participants: {
+          select: {
+            id: true,
+            user: {
+              select: {
+                avatarUrl: true,
+              },
+            },
+          },
+          take: 4,
+        },
+        owner: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    })
+
+    return { poll }
   })
 }
