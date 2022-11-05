@@ -154,7 +154,7 @@ export async function poolRoutes(fastify: FastifyInstance) {
 
   // Retorna bolão pelo ID
   fastify.get("/polls/:id", { onRequest: [authenticate] }, async (request) => {
-    // Locatiza todos os bolões que o usuário participa
+    
     const getPollParams = z.object({
       id: z.string(),
     })
