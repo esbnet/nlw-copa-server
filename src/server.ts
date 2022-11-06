@@ -10,7 +10,9 @@ import { guessRoutes } from "./routes/guess";
 import { poolRoutes } from "./routes/poll";
 import { userRoutes } from "./routes/user";
 
-const jwtSecret = env.JWT_SECRET
+const jwtSecret = String(env.JWT_SECRET)
+const serverPort = Number(env.SERVER_PORT)
+const hostAccess = String(env.HOST_ACCESS)
 
 async function bootstrap() {
   const fastify = Fastify({
@@ -22,7 +24,7 @@ async function bootstrap() {
   })
 
   await fastify.register(jwt, {
-    secret: String(jwtSecret)
+    secret: jwtSecret
   })
 
   await fastify.register(authRoutes)
@@ -32,8 +34,8 @@ async function bootstrap() {
   await fastify.register(guessRoutes)
   fastify.listen(
     {
-      port: 3333,
-      host: "0.0.0.0",
+      port: serverPort,
+      host: hostAccess,
     },
     () => {
       console.log(" 🚀 Server up and listening on port 3333")
