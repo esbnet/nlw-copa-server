@@ -1,12 +1,16 @@
-import cors from "@fastify/cors"
-import Fastify from "fastify"
-import jwt from '@fastify/jwt'
+import cors from "@fastify/cors";
+import jwt from '@fastify/jwt';
+import Fastify from "fastify";
 
-import { authRoutes } from "./routes/auth"
-import { gameRoutes } from "./routes/game"
-import { guessRoutes } from "./routes/guess"
-import { poolRoutes } from "./routes/poll"
-import { userRoutes } from "./routes/user"
+import { env } from 'node:process';
+
+import { authRoutes } from "./routes/auth";
+import { gameRoutes } from "./routes/game";
+import { guessRoutes } from "./routes/guess";
+import { poolRoutes } from "./routes/poll";
+import { userRoutes } from "./routes/user";
+
+const jwtSecret = env.JWT_SECRET
 
 async function bootstrap() {
   const fastify = Fastify({
@@ -18,7 +22,7 @@ async function bootstrap() {
   })
 
   await fastify.register(jwt, {
-    secret: 'NovavidaLonga@2'
+    secret: String(jwtSecret)
   })
 
   await fastify.register(authRoutes)
