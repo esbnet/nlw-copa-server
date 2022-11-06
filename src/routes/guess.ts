@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify"
-import { number, z } from "zod"
+import { z } from "zod"
 
 import { prisma } from "../lib/prisma"
 import { authenticate } from "../plugin/authenticate"
@@ -71,11 +71,11 @@ export async function guessRoutes(fastify: FastifyInstance) {
         })
       }
 
-      // if (game.date < new Date()) {
-      //   return replay.status(400).send({
-      //     message: "Este bolão já está finalizado!",
-      //   })
-      // }
+      if (game.date < new Date()) {
+        return replay.status(400).send({
+          message: "Este bolão já está finalizado!",
+        })
+      }
 
       await prisma.guess.create({
         data: {
